@@ -6,7 +6,6 @@ export interface CarCreate {
 }
 
 export interface CarUpdate {
-    carId: number;
     brand: string;
     model: string;
     notes: string | null;

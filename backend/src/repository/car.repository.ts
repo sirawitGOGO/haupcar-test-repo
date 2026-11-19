@@ -16,22 +16,20 @@ export const carRepository = {
         });
         return {
             totalItem: count,
-            totalPage: rows.length === 0 ? 0 : Math.ceil(count / limit),
+            totalPage: rows.length > 0 ? Math.ceil(count / limit) : 0,
             currentPage: page,
-            data: rows.length === 0 ? [] : rows.map((car) => ({
+            data: rows.length > 0 ? rows.map((car) => ({
                 carId: car.dataValues.carId,
                 registrationNumber: car.dataValues.registrationNumber,
                 brand: car.dataValues.brand,
                 model: car.dataValues.model,
                 notes: car.dataValues.notes
-            }))
+            })) : []
         }
     },
     findById: async (id: number): Promise<CarResponse | null> => {
         const car = await database.carModel.findByPk(id);
-        if (car === null) {
-            return null
-        }
+
         return car ? {
             carId: car.dataValues.carId,
             registrationNumber: car.dataValues.registrationNumber,
@@ -52,14 +50,14 @@ export const carRepository = {
             notes: newCar.dataValues.notes
         }
     },
-    update: async (data: CarUpdate): Promise<number> => {
+    update: async (id: number, data: CarUpdate): Promise<number> => {
         const [updateCar] = await database.carModel.update({
             brand: data.brand,
             model: data.model,
             notes: data.notes
         }, {
             where: {
-                carId: data.carId
+                carId: id
             }
         });
         return updateCar

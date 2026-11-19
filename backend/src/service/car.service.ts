@@ -23,19 +23,19 @@ export const carService = {
                 registrationNumber: data.registrationNumber
             }
         });
-        if (!existCar) {
+        if (existCar) {
             throw new Error('This car is already exist')
         }
         const result = await carRepository.create(data);
         return result
     },
-    update: async (data: CarUpdate): Promise<number | Error> => {
-        const existCar = await carRepository.findById(data.carId);
+    update: async (id:number, data: CarUpdate): Promise<number | Error> => {
+        const existCar = await carRepository.findById(id);
         if (!existCar) {
             throw new Error('Car not found')
         }
 
-        const result = await carRepository.update(data);
+        const result = await carRepository.update(id, data);
         return result
     },
     delete: async (id: number): Promise<number | Error> => {
