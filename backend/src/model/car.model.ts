@@ -13,6 +13,7 @@ export const CarModel = (sequelize: Sequelize) => {
             },
             registrationNumber: {
                 type: DataTypes.STRING,
+                unique: true,
                 allowNull: false,
             },
             brand: {

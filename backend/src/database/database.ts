@@ -11,10 +11,10 @@ const sequelize = new Sequelize(
         dialect: 'postgres'
 });
 
-const model = CarModel(sequelize);
+const carModel = CarModel(sequelize);
 
 export const database = {
     sequelize,
     Sequelize,
-    model
+    carModel
 }

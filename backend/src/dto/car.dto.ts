@@ -1,6 +1,12 @@
-export interface CarCreateAndUpdate {
-    carId?: number;
+export interface CarCreate {
     registrationNumber: string;
+    brand: string;
+    model: string;
+    notes: string | null;
+}
+
+export interface CarUpdate {
+    carId: number;
     brand: string;
     model: string;
     notes: string | null;
