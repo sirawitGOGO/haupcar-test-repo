@@ -2,10 +2,10 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { baseApi } from "../service/api";
 import type { CarCreate, CarUpdate } from "../interface/interface";
 
-export const useCar = {
+export const useCarApi = {
     findAll: (page: number, limit: number) => {
         return useQuery({
-            queryKey: ["car"],
+            queryKey: ["car", { page, limit }],
             queryFn: () => baseApi.findAll(page, limit)
         })
     },
