@@ -1,13 +1,20 @@
-import { DeleteFilled, EditFilled, PlusCircleFilled } from '@ant-design/icons';
+import { DeleteFilled, EditFilled, PlusCircleOutlined } from '@ant-design/icons';
 import { Flex, FloatButton, Space, Table, type TableColumnsType } from 'antd';
 import React, { useState } from 'react';
 import { useCarApi } from '../hook/useCarApi';
 import Swal from 'sweetalert2';
-import type { CarResponse } from '../interface/interface';
+import type { CarCreateAndUpdateRequest, CarResponse } from '../interface/interface';
+import CarModal from './CarModal';
 
 const CarTable: React.FC = () => {
     const [page, setPage] = useState<number>(1);
     const [limit, setLimit] = useState<number>(2);
+
+    const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+    const [isUpdate, setIsUpdate] = useState<boolean>(false);
+    const [carId, setCarId] = useState<number | null>(null);
+    const [updateData, setUpdateData] = useState<CarCreateAndUpdateRequest | null>(null);
+
     const { data: carData, isLoading: isCarLoading } = useCarApi.findAll(page, limit);
 
     const deleteMutation = useCarApi.delete();
@@ -36,6 +43,14 @@ const CarTable: React.FC = () => {
         }
     }
 
+    const handleUpdate = (id: number, data: CarCreateAndUpdateRequest) => {
+        setIsModalOpen(true);
+        setIsUpdate(true);
+        const payload: CarCreateAndUpdateRequest = { ...data }
+        setCarId(id);
+        setUpdateData(payload);
+    }
+
     const columns: TableColumnsType<CarResponse> = [
         { title: 'Registration Number', dataIndex: 'registrationNumber', key: 'registrationNumber' },
         { title: 'brand', dataIndex: 'brand', key: 'brand' },
@@ -44,10 +59,10 @@ const CarTable: React.FC = () => {
         {
             title: 'Action',
             key: 'action',
-            render: (record) => (
+            render: (record: CarResponse) => (
                 <Space size={"medium"}>
-                    <EditFilled />
-                    <DeleteFilled type="" onClick={() => handleDelete(record.carId)} />
+                    <EditFilled onClick={() => handleUpdate(record.carId, record)} />
+                    <DeleteFilled onClick={() => handleDelete(record.carId)} />
                 </Space>
             ),
         },
@@ -55,7 +70,13 @@ const CarTable: React.FC = () => {
 
     return (
         <Flex gap="small" justify="center" vertical>
-            <FloatButton icon={<PlusCircleFilled/>} type="primary" />
+            <FloatButton
+                shape="square"
+                icon={<PlusCircleOutlined />}
+                content="ADD CAR"
+                type="primary"
+                onClick={() => setIsModalOpen(true)}
+            />
             <Table<CarResponse>
                 columns={columns}
                 dataSource={carData?.data || []}
@@ -71,6 +92,16 @@ const CarTable: React.FC = () => {
                         setLimit(limit)
                     }
                 }}
+            />
+            <CarModal
+                isModalOpen={isModalOpen}
+                isModalClose={() => {
+                    setUpdateData(null);
+                    setIsModalOpen(false);
+                }}
+                isUpdate={isUpdate}
+                carId={carId}
+                data={updateData}
             />
         </Flex>
     )

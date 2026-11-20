@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { baseApi } from "../service/api";
-import type { CarCreate, CarUpdate } from "../interface/interface";
+import type { CarCreateAndUpdateRequest } from "../interface/interface";
 
 export const useCarApi = {
     findAll: (page: number, limit: number) => {
@@ -18,7 +18,7 @@ export const useCarApi = {
     create: () => {
         const queryClient = useQueryClient()
         return useMutation({
-            mutationFn: (payload: CarCreate) => baseApi.create(payload),
+            mutationFn: (payload: CarCreateAndUpdateRequest) => baseApi.create(payload),
             onSuccess: () => {
                 queryClient.invalidateQueries({
                     queryKey: ["car"]
@@ -29,7 +29,7 @@ export const useCarApi = {
     update: () => {
         const queryClient = useQueryClient()
         return useMutation({
-            mutationFn: ({ id, payload } : { id: number, payload: CarUpdate}) => baseApi.update(id, payload),
+            mutationFn: ({ id, payload } : { id: number, payload: CarCreateAndUpdateRequest}) => baseApi.update(id, payload),
             onSuccess: () => {
                 queryClient.invalidateQueries({
                     queryKey: ["car"]

@@ -1,5 +1,5 @@
 import axios from "axios";
-import type { ApiResponse, CarCreate, CarResponse, CarUpdate, PaginationResponse } from "../interface/interface";
+import type { ApiResponse, CarCreateAndUpdateRequest, CarResponse, PaginationResponse } from "../interface/interface";
 import { ENDPOINTS } from "./endpoint";
 
 export const baseApi = {
@@ -15,14 +15,14 @@ export const baseApi = {
         );
         return response.data.data
     },
-    create: async (payload: CarCreate) => {
+    create: async (payload: CarCreateAndUpdateRequest) => {
         const response = await axios.post<ApiResponse<CarResponse | string>>(
             ENDPOINTS.create,
             payload
         );
         return response.data.data
     },
-    update: async (id: number, payload: CarUpdate) => {
+    update: async (id: number, payload: CarCreateAndUpdateRequest) => {
         const response = await axios.put<ApiResponse<string>>(
             ENDPOINTS.update(id),
             payload
