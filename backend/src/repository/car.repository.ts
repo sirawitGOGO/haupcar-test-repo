@@ -1,5 +1,5 @@
 import { database } from "../database/database";
-import { CarCreate, CarResponse, CarUpdate, PaginationResponse } from "../dto/car.dto";
+import { CarCreateAndUpdate, CarResponse, PaginationResponse } from "../dto/car.dto";
 import { Car } from "../interface/interface";
 
 export const carRepository = {
@@ -38,7 +38,7 @@ export const carRepository = {
             notes: car.dataValues.notes
         } : null
     },
-    create: async (data: CarCreate): Promise<CarResponse> => {
+    create: async (data: CarCreateAndUpdate): Promise<CarResponse> => {
         const newCar = await database.carModel.create({
             ...data
         } as Car);
@@ -50,8 +50,9 @@ export const carRepository = {
             notes: newCar.dataValues.notes
         }
     },
-    update: async (id: number, data: CarUpdate): Promise<number> => {
+    update: async (id: number, data: CarCreateAndUpdate): Promise<number> => {
         const [updateCar] = await database.carModel.update({
+            registrationNumber: data.registrationNumber,
             brand: data.brand,
             model: data.model,
             notes: data.notes

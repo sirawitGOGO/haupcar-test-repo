@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { carService } from "../service/car.service";
 import { sendErrorResponse, sendSuccessResponse } from "../util/response";
-import { CarCreate, CarUpdate } from "../dto/car.dto";
+import { CarCreateAndUpdate } from "../dto/car.dto";
 
 export const carController = {
     findAll: async (req: Request, res: Response) => {
@@ -26,7 +26,7 @@ export const carController = {
     },
     create: async (req: Request, res: Response) => {
         try {
-            const payload = req.body as CarCreate;
+            const payload = req.body as CarCreateAndUpdate;
             const result = await carService.create(payload);
             if (result instanceof Error) sendErrorResponse(res, 400, result.message);
             sendSuccessResponse(res, 201, result);
@@ -37,9 +37,9 @@ export const carController = {
     update: async (req: Request, res: Response) => {
         try {
             const id = Number(req.params.id);
-            const payload = req.body as CarUpdate;
+            const payload = req.body as CarCreateAndUpdate;
             const result = await carService.update(id, payload);
-            if (result instanceof Error) sendErrorResponse(res, 404, result.message);
+            if (result instanceof Error) sendErrorResponse(res, 400, result.message);
             sendSuccessResponse(res, 201, `${result} updated`);
         } catch (error) {
             sendErrorResponse(res, 500, error)

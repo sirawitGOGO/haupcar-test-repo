@@ -1,5 +1,5 @@
 import { database } from "../database/database";
-import { CarCreate, CarResponse, CarUpdate, PaginationResponse } from "../dto/car.dto";
+import { CarCreateAndUpdate, CarResponse, PaginationResponse } from "../dto/car.dto";
 import { carRepository } from "../repository/car.repository";
 
 export const carService = {
@@ -17,7 +17,7 @@ export const carService = {
         }
         return result
     },
-    create: async (data: CarCreate): Promise<CarResponse | Error> => {
+    create: async (data: CarCreateAndUpdate): Promise<CarResponse | Error> => {
         const existCar = await database.carModel.findOne({
             where: {
                 registrationNumber: data.registrationNumber
@@ -29,10 +29,13 @@ export const carService = {
         const result = await carRepository.create(data);
         return result
     },
-    update: async (id:number, data: CarUpdate): Promise<number | Error> => {
+    update: async (id:number, data: CarCreateAndUpdate): Promise<number | Error> => {
         const existCar = await carRepository.findById(id);
         if (!existCar) {
             throw new Error('Car not found')
+        }
+        if (existCar.carId != id && existCar.registrationNumber === data.registrationNumber) {
+            throw new Error('Registration Number is duplicate to the exist one')
         }
 
         const result = await carRepository.update(id, data);
