@@ -1,5 +1,5 @@
 import { DeleteFilled, EditFilled, PlusCircleOutlined } from '@ant-design/icons';
-import { Flex, FloatButton, Space, Table, type TableColumnsType } from 'antd';
+import { Button, Flex, Space, Table, type TableColumnsType } from 'antd';
 import React, { useState } from 'react';
 import { useCarApi } from '../hook/useCarApi';
 import Swal from 'sweetalert2';
@@ -53,16 +53,20 @@ const CarTable: React.FC = () => {
 
     const columns: TableColumnsType<CarResponse> = [
         { title: 'Registration Number', dataIndex: 'registrationNumber', key: 'registrationNumber' },
-        { title: 'brand', dataIndex: 'brand', key: 'brand' },
-        { title: 'model', dataIndex: 'model', key: 'model' },
-        { title: 'notes', dataIndex: 'notes', key: 'notes' },
+        { title: 'Brand', dataIndex: 'brand', key: 'brand' },
+        { title: 'Model', dataIndex: 'model', key: 'model' },
+        { title: 'Notes', dataIndex: 'notes', key: 'notes' },
         {
-            title: 'Action',
+            title: '',
             key: 'action',
             render: (record: CarResponse) => (
-                <Space size={"medium"}>
-                    <EditFilled onClick={() => handleUpdate(record.carId, record)} />
-                    <DeleteFilled onClick={() => handleDelete(record.carId)} />
+                <Space size="small">
+                    <Button type="text">
+                        <EditFilled style={{ color: "blue" }} onClick={() => handleUpdate(record.carId, record)} />
+                    </Button>
+                    <Button type="text" >
+                        <DeleteFilled style={{ color: "red" }} onClick={() => handleDelete(record.carId)} />
+                    </Button>
                 </Space>
             ),
         },
@@ -70,14 +74,18 @@ const CarTable: React.FC = () => {
 
     return (
         <Flex gap="small" justify="center" vertical>
-            <FloatButton
-                shape="square"
-                icon={<PlusCircleOutlined />}
-                content="ADD CAR"
-                type="primary"
-                onClick={() => setIsModalOpen(true)}
-            />
+            <Flex justify="flex-end" align="center">
+                <Button
+                    type="primary"
+                    onClick={() => {
+                        setIsModalOpen(true);
+                    }}
+                >
+                    <PlusCircleOutlined />
+                </Button>
+            </Flex>
             <Table<CarResponse>
+                bordered={true}
                 columns={columns}
                 dataSource={carData?.data || []}
                 rowKey={"carId"}
@@ -96,6 +104,8 @@ const CarTable: React.FC = () => {
             <CarModal
                 isModalOpen={isModalOpen}
                 isModalClose={() => {
+                    setIsUpdate(false);
+                    setCarId(null);
                     setUpdateData(null);
                     setIsModalOpen(false);
                 }}

@@ -69,7 +69,8 @@ const CarModal: React.FC<CarModalProp> = ({
             title={isUpdate ? "Update Car" : "Add New Car"}
             open={isModalOpen}
             onCancel={() => {
-                isModalClose()
+                isModalClose();
+                form.resetFields();
             }}
             footer={null}
         >
